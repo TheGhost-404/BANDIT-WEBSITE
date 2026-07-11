@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>$BANDIT — When the market crashed</title>
+  <style>
+    :root{
+      --bg:#090909;
+      --panel:#111;
+      --gold:#ffd700;
+      --white:#ffffff;
+      --emerald:#00a86b;
+      --glass:rgba(255,255,255,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0;padding:0}
+    body{
+      margin:0;
+      font-family: "Trebuchet MS", "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--white);
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255,215,0,0.08), transparent 18%),
+        radial-gradient(circle at 82% 12%, rgba(0,170,107,0.06), transparent 14%),
+        linear-gradient(180deg, #090909 0%, #050505 100%);
+      overflow-x:hidden;
+    }
+    .page{width:min(1180px,100%);margin:0 auto;padding:24px 18px 60px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;padding-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-name{font-weight:800;color:var(--gold);font-size:1.2rem;letter-spacing:1px}
+    .brand-tag{color:#c4c4c4;font-size:.95rem}
+    .nav{display:flex;flex-wrap:wrap;gap:16px}
+    .nav a{color:#ccc;text-decoration:none;font-size:.93rem;font-weight:600;transition:color .2s}
+    .nav a:hover{color:var(--gold)}
+    .hero{position:relative;border-radius:24px;overflow:visible;min-height:68vh;background:linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.9));box-shadow:0 40px 120px rgba(0,0,0,.75)}
+    .hero::before{content:'';position:absolute;inset:0;background-image:url('BANDIT_GM_market.jpg');background-size:cover;background-position:center;filter:brightness(.55) saturate(1.05) contrast(1.04);transform:scale(1.03);z-index:0}
+    .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 20%, rgba(255,215,0,0.16), transparent 16%),radial-gradient(circle at 78% 82%, rgba(0,170,107,0.08), transparent 14%),linear-gradient(180deg, transparent 22%, rgba(0,0,0,.88) 100%);pointer-events:none}
+    .hero-content{position:relative;z-index:2;display:grid;grid-template-columns:1fr 360px;align-items:center;gap:28px;padding:44px 40px 48px}
+    .label{display:inline-flex;padding:.6rem 1.05rem;border-radius:999px;background:rgba(255,255,255,.08);color:#f6f6f6;font-size:.92rem;font-weight:800;margin-bottom:18px;box-shadow:0 0 14px rgba(255,215,0,.08)}
+    .hero-copy h1{font-size:clamp(3rem,5.6vw,4.8rem);line-height:0.98;margin:0 0 18px;letter-spacing:.22em;font-family:"Impact","Arial Black","Trebuchet MS",sans-serif;font-weight:900;text-transform:uppercase;text-shadow:0 0 26px rgba(255,215,0,.22),0 0 48px rgba(255,215,0,.16)}
+    .hero-copy h1 .accent{display:block;color:var(--gold)}
+    .hero-copy p{max-width:660px;color:#f2f2f2;font-size:1.05rem;line-height:1.9;margin:0 0 26px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:14px}
+    .button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:15px 26px;border-radius:14px;border:1px solid rgba(255,255,255,.08);font-weight:900;font-size:1rem;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;position:relative;overflow:hidden;font-family:"Impact","Arial Black","Trebuchet MS",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+    .button:hover{transform:translateY(-2px) scale(1.01)}
+    .button::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:linear-gradient(120deg,transparent,rgba(255,255,255,.16),transparent);opacity:.3;transform:translateX(-120%);transition:transform .4s ease}
+    .button:hover::before{transform:translateX(120%)}
+    .button.is-pulse{animation:pulseGlow 1.4s ease}
+    @keyframes pulseGlow{0%{transform:scale(1);box-shadow:0 0 0 1px rgba(255,215,0,.2),0 0 24px rgba(255,215,0,.24),0 12px 32px rgba(0,0,0,.32)}50%{transform:scale(1.03);box-shadow:0 0 0 1px rgba(255,215,0,.3),0 0 40px rgba(255,215,0,.34),0 16px 40px rgba(0,0,0,.36)}100%{transform:scale(1);box-shadow:0 0 0 1px rgba(255,215,0,.2),0 0 24px rgba(255,215,0,.24),0 12px 32px rgba(0,0,0,.32)}}
+    .popup-overlay{position:absolute;inset:0;pointer-events:none;z-index:30}
+    .popup-raccoon{position:absolute;left:62%;top:30%;width:220px;height:220px;transform:translateX(-50%) scale(0);border-radius:30px;box-shadow:0 28px 70px rgba(0,0,0,.7);border:2px solid rgba(255,255,255,.18);background:#111;animation:popRaccoon .9s ease forwards;pointer-events:none;overflow:hidden;opacity:0;}
+    .popup-raccoon img{width:100%;height:100%;object-fit:cover;display:block}
+    @keyframes popRaccoon{0%{opacity:0;transform:translateX(-50%) translateY(40px) scale(0.3)}40%{opacity:1;transform:translateX(-50%) translateY(-8px) scale(1.05)}70%{transform:translateX(-50%) translateY(-14px) scale(0.98)}100%{opacity:1;transform:translateX(-50%) translateY(-26px) scale(1)}}
+    .button-primary{background:linear-gradient(90deg,var(--gold),#e6c200);color:#111;box-shadow:0 0 0 1px rgba(255,215,0,.2),0 0 24px rgba(255,215,0,.24),0 12px 32px rgba(0,0,0,.32)}
+    .button-secondary{background:rgba(255,255,255,.06);color:#f1f1f1;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(255,255,255,.05)}
+    .hero-panel{position:relative;padding:24px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px)}
+    .hero-panel h2{margin:0 0 14px;font-size:1rem;color:#bdbdbd;letter-spacing:.12em;text-transform:uppercase}
+    .stat-list{display:grid;gap:14px}
+    .stat-card{padding:18px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+    .stat-card strong{display:block;font-size:1.45rem;color:var(--gold);margin-bottom:8px}
+    .stat-card span{color:#c9c9c9;font-size:.9rem}
+    .hero-track{position:relative;margin-top:18px;height:78px}
+    .cart{position:absolute;left:-220px;bottom:0;width:240px;height:70px;border-radius:20px;background:#111;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:16px;padding:0 18px;box-shadow:0 24px 72px rgba(0,0,0,.55)}
+    .cart.run{animation:cartRoll 1.7s cubic-bezier(.22,.9,.35,1) forwards}
+    @keyframes cartRoll{to{transform:translateX(540px)}}
+    .cart svg{width:32px;height:auto;flex-shrink:0}
+    .cart-info{color:#ddd;font-size:.95rem;line-height:1.3}
+    .glow-ring{position:absolute;right:-12px;top:14px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at center, rgba(255,215,0,.16), transparent 56%);pointer-events:none}
+    .smoke{position:absolute;left:10%;bottom:8%;width:380px;height:150px;border-radius:50%;background:radial-gradient(circle at center, rgba(255,255,255,.08), transparent 54%);filter:blur(26px);pointer-events:none;opacity:.92}
+    .section{margin-top:40px}
+    .section h3{margin:0 0 18px;font-size:1.35rem;color:var(--gold);font-family:"Impact","Arial Black","Trebuchet MS",sans-serif;font-weight:900;letter-spacing:.16em;text-transform:uppercase;text-shadow:0 0 14px rgba(255,215,0,.14)}
+    .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+    .panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:24px;backdrop-filter:blur(10px)}
+    .panel h4{margin:0 0 12px;color:#dedede}
+    .panel p{margin:0;color:#f0f0f0;line-height:1.8;font-size:1rem;font-weight:600}
+    .rules{display:grid;gap:12px;margin-top:18px}
+    .rule{padding:16px 18px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:#d8d8d8}
+    .timeline{display:grid;gap:14px}
+    .timeline-item{padding:18px 20px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:#e4e4e4}
+    .timeline-item strong{display:block;color:var(--gold);margin-bottom:10px}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .feature{padding:20px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+    .feature h4{margin:0 0 10px;color:#f1f1f1}
+    .feature p{margin:0;color:#f2f2f2;line-height:1.8;font-size:1rem;font-weight:600}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .stats-card{padding:22px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);text-align:center}
+    .stats-card strong{display:block;font-size:1.7rem;color:var(--gold);margin-bottom:8px}
+    .stats-card span{display:block;color:#d2d2d2;font-size:.95rem}
+    .gallery{display:grid;grid-template-columns:1fr;gap:18px;justify-items:center}
+    .gallery img{width:min(100%, 780px);height:auto;max-height:560px;object-fit:contain;padding:14px;background:rgba(255,255,255,.03);border-radius:24px;border:1px solid rgba(255,255,255,.08);box-shadow:0 18px 44px rgba(0,0,0,.34)}
+    .community-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .community-actions .button{min-width:140px}
+    footer{margin-top:44px;padding-top:22px;text-align:center;color:#8f8f8f;font-size:.9rem}
+    @media (max-width:980px){.hero-content{grid-template-columns:1fr}.grid-2,.cards,.stats-grid{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}}
+    @media (max-width:640px){.topbar{flex-direction:column;align-items:flex-start}.hero{min-height:62vh}.hero-content{padding:32px 24px}.page{padding:20px 16px 50px}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-name">$BANDIT</div>
+        <div class="brand-tag">Fear is the discount.</div>
+      </div>
+      <nav class="nav">
+        <a href="#story">Story</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#why">Why BANDIT</a>
+        <a href="#community">Community</a>
+      </nav>
+    </div>
+
+    <section class="hero" id="hero">
+      <div class="hero-content">
+        <div class="hero-copy">
+          <div class="label">When the market crashed</div>
+          <h1>EVERYONE RAN.<span class="accent">THE BANDIT LOADED HIS CART.</span></h1>
+          <p>The market panicked. Bandit saw a clearance sale. Now he’s taking the loot, stacking gold, and walking away with the reward.</p>
+          <div class="hero-actions">
+            <button class="button button-primary" id="comingBtn" type="button">✨ BANDIT is coming</button>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <h2>Market chaos turned premium</h2>
+          <div class="stat-list">
+            <div class="stat-card"><strong>1,000,000,000</strong><span>Supply</span></div>
+            <div class="stat-card"><strong>Locked</strong><span>Liquidity</span></div>
+            <div class="stat-card"><strong>Solana</strong><span>Chain</span></div>
+          </div>
+          <div class="hero-track">
+            <div class="glow-ring"></div>
+            <div class="smoke"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="story">
+      <h3>The Legend of Bandit</h3>
+      <div class="grid-2">
+        <div class="panel">
+          <h4>Back when everyone panicked</h4>
+          <p>When fear hit the market everyone dumped. Everyone disappeared. Except one raccoon. Bandit wasn't afraid — he walked into the chaos, loaded his cart with discounted treasures, and never looked back.</p>
+        </div>
+        <div class="panel">
+          <h4>Bandit's Rules</h4>
+          <div class="rules">
+            <div class="rule">✔ Panic creates opportunity.</div>
+            <div class="rule">✔ Empty shelves hide treasure.</div>
+            <div class="rule">✔ The cart always comes first.</div>
+            <div class="rule">✔ Loot before leaving.</div>
+            <div class="rule">✔ Stay when others run.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="timeline">
+      <h3>Interactive Timeline</h3>
+      <div class="timeline">
+        <div class="timeline-item"><strong>Panic</strong><span>Red candles fall. Headlines scream. The market exits.</span></div>
+        <div class="timeline-item"><strong>Opportunity</strong><span>Bandit walks into the empty store, finds the glowing loot, and loads the cart.</span></div>
+        <div class="timeline-item"><strong>Escape</strong><span>The cart is full, the moon rises, and Bandit leaves richer.</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="why">
+      <h3>Why BANDIT?</h3>
+      <div class="cards">
+        <div class="feature"><h4>Buy Fear</h4><p>Everyone panics. Bandit shops.</p></div>
+        <div class="feature"><h4>Community</h4><p>Built by calm traders who stay when others run.</p></div>
+        <div class="feature"><h4>Meme Powered</h4><p>The strongest memes survive every cycle.</p></div>
+        <div class="feature"><h4>Solana Speed</h4><p>Fast, cheap, ready — built for the next crash.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="tokenomics">
+      <h3>Tokenomics</h3>
+      <div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+        <div class="stats-card"><strong>1,000,000,000</strong><span>Supply</span></div>
+        <div class="stats-card"><strong>Locked</strong><span>Liquidity</span></div>
+        <div class="stats-card"><strong>Solana</strong><span>Chain</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>Gallery</h3>
+      <div class="gallery">
+        <img src="bandit.jpeg" alt="Bandit at checkout" />
+        <img src="BANDIT_CCTV.jpg" alt="Bandit caught on camera" />
+        <img src="BANDIT_GM_market.jpg" alt="Bandit holds a GM sign" />
+      </div>
+    </section>
+
+    <section class="section" id="community">
+      <h3>Join the Crew</h3>
+      <p style="color:#ccc;font-size:1rem;margin-top:14px;">Community access coming soon.</p>
+      <a class="button button-secondary" href="https://x.com/MignightBandit" target="_blank" rel="noopener noreferrer" style="margin-top:14px;display:inline-block;">Follow on X</a>
+    </section>
+
+    <footer>$BANDIT — Fear is the discount. Coming soon.</footer>
+  </div>
+
+  <script>
+    const hero = document.getElementById('hero');
+    const comingBtn = document.getElementById('comingBtn');
+    const coinLayer = document.createElement('div');
+    coinLayer.style.position='absolute';
+    coinLayer.style.inset='0';
+    coinLayer.style.pointerEvents='none';
+    hero.appendChild(coinLayer);
+
+    function spawnCoin(x){
+      const coin = document.createElement('div');
+      coin.textContent='$';
+      coin.style.position='absolute';
+      coin.style.left=(x||(12+Math.random()*72))+'%';
+      coin.style.bottom='8%';
+      coin.style.width='42px';
+      coin.style.height='42px';
+      coin.style.borderRadius='50%';
+      coin.style.display='grid';
+      coin.style.placeItems='center';
+      coin.style.background='radial-gradient(circle at 30% 30%, #fff6b8, #ffd700)';
+      coin.style.color='#1e1e1e';
+      coin.style.fontWeight='800';
+      coin.style.boxShadow='0 8px 28px rgba(0,0,0,.45)';
+      coinLayer.appendChild(coin);
+      coin.animate([
+        {transform:'translateY(0) scale(1)',opacity:1},
+        {transform:'translateY(-140px) scale(.9)',opacity:0}
+      ],{duration:3200,easing:'cubic-bezier(.2,.9,.3,1)'});
+      setTimeout(()=>coin.remove(),3400);
+    }
+
+    let ambient = setInterval(()=>spawnCoin(),900);
+    let candles = setInterval(()=>spawnCoin(10+Math.random()*70),1400);
+
+    comingBtn.addEventListener('click',()=>{
+      comingBtn.textContent='BANDIT launching soon';
+      comingBtn.classList.add('is-pulse');
+      const overlay = document.createElement('div');
+      overlay.className = 'popup-overlay';
+      const popup = document.createElement('div');
+      popup.className = 'popup-raccoon';
+      const img = document.createElement('img');
+      img.src = 'bandit.jpeg';
+      img.alt = 'Bandit raccoon';
+      popup.appendChild(img);
+      overlay.appendChild(popup);
+      hero.appendChild(overlay);
+      setTimeout(()=>popup.style.opacity = '0',1100);
+      setTimeout(()=>overlay.remove(),1400);
+      setTimeout(()=>{
+        comingBtn.textContent='✨ BANDIT is coming';
+        comingBtn.classList.remove('is-pulse');
+      },1400);
+    });
+
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){clearInterval(ambient);clearInterval(candles);coinLayer.innerHTML='';}
+  </script>
+</body>
+</html>
